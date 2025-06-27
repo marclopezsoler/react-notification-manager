@@ -2,12 +2,20 @@ import { useContext } from "react";
 
 import { NotificationContext } from "../context/NotificationsContext";
 
-import type { NotificationProps } from "../types";
+import type {
+  NotificationProps,
+  NotificationThemeType,
+  ThemeMode,
+} from "../types";
 
 export function useNotifications(): {
   notifications: NotificationProps[];
   notify: (notif: Omit<NotificationProps, "id" | "isExiting">) => void;
   exitNotification: (id: string) => void;
+  mode: ThemeMode;
+  setMode: (m: ThemeMode) => void;
+  lightTheme: Record<NotificationProps["type"], NotificationThemeType>;
+  darkTheme: Record<NotificationProps["type"], NotificationThemeType>;
 } {
   const ctx = useContext(NotificationContext);
   if (!ctx) {

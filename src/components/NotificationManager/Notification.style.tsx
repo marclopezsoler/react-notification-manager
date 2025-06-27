@@ -10,7 +10,7 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 export const NotificationWrapper = styled.div<{
-  $bg: string; // expect a hex, e.g. "#e8f5e9"
+  $bg: string;
   $border: string;
   $color: string;
   $index: number;
@@ -27,7 +27,6 @@ export const NotificationWrapper = styled.div<{
   align-items: center;
   gap: 8px;
 
-  /* vertical stack offset (always grows downward) */
   ${({ $veticalAlign, $index }) => {
     const step = Math.max(4, 16 - $index * 2);
     const offset = step * $index;
@@ -40,7 +39,6 @@ export const NotificationWrapper = styled.div<{
         `;
   }}
 
-  /* horizontal placement */
   ${({ $horizontalAlign }) => {
     switch ($horizontalAlign) {
       case "left":
@@ -67,7 +65,6 @@ export const NotificationWrapper = styled.div<{
   user-select: ${({ $isClickable }) => ($isClickable ? "auto" : "none")};
   cursor: ${({ $isClickable }) => ($isClickable ? "pointer" : "default")};
 
-  /* semi‐transparent blurred background */
   background: ${({ $bg }) => hexToRgba($bg, 0.6)};
   border: 1px solid ${({ $border }) => hexToRgba($border, 0.6)};
   color: ${({ $color }) => $color};
@@ -75,7 +72,6 @@ export const NotificationWrapper = styled.div<{
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 
-  /* entry/exit animation + stacking transform */
   ${({ $horizontalAlign, $veticalAlign, $mounted, $isExiting, $index }) => {
     const base = 1 - $index * 0.02;
     const entryY = $veticalAlign === "top" ? "-50px" : "50px";
@@ -93,7 +89,6 @@ export const NotificationWrapper = styled.div<{
     `;
   }}
 
-  /* content styling */
   .column {
     display: flex;
     flex-direction: column;
@@ -130,6 +125,7 @@ export const NotificationWrapper = styled.div<{
     position: absolute;
     top: 4px;
     right: 4px;
+
     .close-icon {
       display: flex;
       align-items: center;

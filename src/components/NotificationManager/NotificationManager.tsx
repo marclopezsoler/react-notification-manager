@@ -1,24 +1,29 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { useNotifications } from "../../hooks/useNotifications.tsx";
+import { useNotifications } from "../../hooks/useNotifications";
 
-import type { ColoredMode, NotificationProps } from "../../types.ts";
+import { AlertIcon } from "../../icons/alert.tsx";
+import { ErrorIcon } from "../../icons/error.tsx";
+import { InfoIcon } from "../../icons/info.tsx";
+import { SuccessIcon } from "../../icons/success.tsx";
+import { CloseIcon } from "../../icons/x.tsx";
 
-const ORDER: Array<
-  | "top-left"
-  | "top-middle"
-  | "top-right"
-  | "bottom-left"
-  | "bottom-middle"
-  | "bottom-right"
-> = [
+import type {
+  ColoredMode,
+  NotificationProps,
+  NotificationThemeType,
+  ThemeMode,
+} from "../../types";
+import { NotificationWrapper } from "./Notification.style";
+
+const ORDER = [
   "top-left",
   "top-middle",
   "top-right",
   "bottom-left",
   "bottom-middle",
   "bottom-right",
-];
+] as const;
 
 export default function NotificationManager() {
   const { notifications, exitNotification } = useNotifications();
@@ -28,8 +33,7 @@ export default function NotificationManager() {
     for (const n of notifications) {
       const [v = "top", h = "middle"] = n.align ?? ["top", "middle"];
       const key = `${v}-${h}`;
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(n);
+      (acc[key] ||= []).push(n);
     }
     return acc;
   }, [notifications]);
@@ -40,7 +44,7 @@ export default function NotificationManager() {
         const bucket = groups[alignKey];
         if (!bucket) return null;
         return bucket
-          .slice(0, 10)
+          .slice(0, 7)
           .map((n, idx) => (
             <Notification
               key={n.id}
@@ -55,18 +59,6 @@ export default function NotificationManager() {
   );
 }
 
-import { useEffect, useState } from "react";
-
-import { AlertIcon } from "../../icons/alert.tsx";
-import { ErrorIcon } from "../../icons/error.tsx";
-import { InfoIcon } from "../../icons/info.tsx";
-import { SuccessIcon } from "../../icons/success.tsx";
-import { CloseIcon } from "../../icons/x.tsx";
-
-import type { NotificationThemeType } from "../../types.ts";
-
-import { NotificationWrapper } from "./Notification.style";
-
 const iconMap: Record<
   NotificationProps["type"],
   React.FC<React.SVGProps<SVGSVGElement>> | null
@@ -78,60 +70,37 @@ const iconMap: Record<
   none: null,
 };
 
-const defaultThemes: Record<NotificationProps["type"], NotificationThemeType> =
-  {
-    success: {
-      borderColor: "#4caf50",
-      backgroundColor: "#e8f5e9",
-      fontColor: "#2e7d32",
-    },
-    error: {
-      borderColor: "#f44336",
-      backgroundColor: "#ffebee",
-      fontColor: "#c62828",
-    },
-    info: {
-      borderColor: "#2196f3",
-      backgroundColor: "#e3f2fd",
-      fontColor: "#1565c0",
-    },
-    alert: {
-      borderColor: "#ff9800",
-      backgroundColor: "#fff3e0",
-      fontColor: "#ef6c00",
-    },
-    none: {
-      borderColor: "#bdbdbd",
-      backgroundColor: "#f7f7f7",
-      fontColor: "#181818",
-    },
-  };
-
-const NONE_THEME: NotificationThemeType = defaultThemes.none;
-
 function computeColors(
-  mode: ColoredMode,
-  theme: NotificationThemeType
+  colored: ColoredMode,
+  type: NotificationProps["type"],
+  userTheme: NotificationThemeType | undefined,
+  lightTheme: Record<NotificationProps["type"], NotificationThemeType>,
+  darkTheme: Record<NotificationProps["type"], NotificationThemeType>,
+  mode: ThemeMode
 ): { bg: string; border: string; color: string } {
-  switch (mode) {
+  const palette = mode === "light" ? lightTheme : darkTheme;
+  const base = userTheme ?? palette[type];
+  const none = palette.none;
+
+  switch (colored) {
     case "border":
       return {
-        bg: NONE_THEME.backgroundColor,
-        border: theme.borderColor,
-        color: theme.fontColor,
+        bg: none.backgroundColor,
+        border: base.borderColor,
+        color: base.fontColor,
       };
     case "plain":
       return {
-        bg: NONE_THEME.backgroundColor,
-        border: NONE_THEME.borderColor,
-        color: NONE_THEME.fontColor,
+        bg: none.backgroundColor,
+        border: none.borderColor,
+        color: none.fontColor,
       };
     case "full":
     default:
       return {
-        bg: theme.backgroundColor,
-        border: theme.borderColor,
-        color: theme.fontColor,
+        bg: base.backgroundColor,
+        border: base.borderColor,
+        color: base.fontColor,
       };
   }
 }
@@ -142,7 +111,7 @@ function Notification(props: NotificationProps) {
     message,
     subMessage,
     type,
-    theme = defaultThemes[props.type],
+    theme: userTheme,
     hasIcon,
     isExiting = false,
     index = 0,
@@ -153,8 +122,20 @@ function Notification(props: NotificationProps) {
     colored = "full",
   } = props;
 
-  const { bg, border, color } = computeColors(colored, theme);
+  // pull context
+  const { mode, lightTheme, darkTheme } = useNotifications();
 
+  // compute our three CSS values:
+  const { bg, border, color } = computeColors(
+    colored,
+    type,
+    userTheme,
+    lightTheme,
+    darkTheme,
+    mode
+  );
+
+  // mount flag for entry animation
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
@@ -175,7 +156,7 @@ function Notification(props: NotificationProps) {
       $isExiting={isExiting}
       $mounted={mounted}
       $isClickable={!!onClick}
-      $canClose={canClose ? true : false}
+      $canClose={!!canClose}
       $veticalAlign={veticalAlign}
       $horizontalAlign={horizontalAlign}
       $bg={bg}

@@ -15,8 +15,8 @@ export function InfoIcon(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 9h.01" />
-      <path d="M11 12h1v4h1" />
+      <path d="M11.5 6h.1" />
+      <path d="M10 9h2v8h2" />
     </svg>
   );
 }

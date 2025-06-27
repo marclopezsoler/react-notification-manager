@@ -33,3 +33,15 @@ export interface NotificationProps {
   >;
   colored?: ColoredMode;
 }
+
+export interface NotificationsProviderProps {
+  defaultMode?: ThemeMode;
+  lightTheme?: Record<
+    "success" | "error" | "info" | "alert" | "none",
+    NotificationThemeType
+  >;
+  darkTheme?: Record<
+    "success" | "error" | "info" | "alert" | "none",
+    NotificationThemeType
+  >;
+}
