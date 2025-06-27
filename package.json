@@ -1,10 +1,16 @@
 {
   "name": "feedback-notification",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight React notification/toast system with hooks & context",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
     "dist",
     "README.md"
