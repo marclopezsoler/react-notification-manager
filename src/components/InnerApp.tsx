@@ -19,6 +19,17 @@ const InnerApp = () => {
       <button
         onClick={() =>
           notify({
+            message: "It's time to wake up!",
+            type: "none",
+            duration: 5000,
+          })
+        }
+      >
+        Wake me up
+      </button>
+      <button
+        onClick={() =>
+          notify({
             message: "Connection failed!",
             subMessage: "Try connecting again later",
             type: "error",
