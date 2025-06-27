@@ -1,7 +1,5 @@
 import styled, { css } from "styled-components";
 
-import type { NotificationThemeType } from "../../types";
-
 function hexToRgba(hex: string, alpha: number) {
   const cleaned = hex.replace(/^#/, "");
   const bigint = parseInt(cleaned, 16);
@@ -12,7 +10,9 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 export const NotificationWrapper = styled.div<{
-  $theme: NotificationThemeType;
+  $bg: string; // expect a hex, e.g. "#e8f5e9"
+  $border: string;
+  $color: string;
   $index: number;
   $isExiting: boolean;
   $mounted: boolean;
@@ -27,31 +27,29 @@ export const NotificationWrapper = styled.div<{
   align-items: center;
   gap: 8px;
 
+  /* vertical stack offset (always grows downward) */
   ${({ $veticalAlign, $index }) => {
     const step = Math.max(4, 16 - $index * 2);
     const offset = step * $index;
-    if ($veticalAlign === "top") {
-      return css`
-        top: calc(1rem + ${offset}px);
-      `;
-    } else {
-      return css`
-        bottom: calc(1rem + ${offset}px);
-      `;
-    }
+    return $veticalAlign === "top"
+      ? css`
+          top: calc(1rem + ${offset}px);
+        `
+      : css`
+          bottom: calc(1rem + ${offset}px);
+        `;
   }}
 
+  /* horizontal placement */
   ${({ $horizontalAlign }) => {
     switch ($horizontalAlign) {
       case "left":
         return css`
           left: 1rem;
-          transform: translateX(0);
         `;
       case "right":
         return css`
           right: 1rem;
-          transform: translateX(0);
         `;
       default:
         return css`
@@ -61,51 +59,59 @@ export const NotificationWrapper = styled.div<{
     }
   }}
 
-  max-width: 90%;
+  max-width: min(320px, 90%);
+  width: fit-content;
   padding: 12px 20px;
-  padding-right: ${({ $canClose }) => ($canClose ? "34px" : "20px")};
+  padding-right: ${({ $canClose }) => ($canClose ? "38px" : "20px")};
   border-radius: 8px;
-
   user-select: ${({ $isClickable }) => ($isClickable ? "auto" : "none")};
   cursor: ${({ $isClickable }) => ($isClickable ? "pointer" : "default")};
 
-  background: ${({ $theme }) => hexToRgba($theme.backgroundColor, 0.6)};
+  /* semi‐transparent blurred background */
+  background: ${({ $bg }) => hexToRgba($bg, 0.6)};
+  border: 1px solid ${({ $border }) => hexToRgba($border, 0.6)};
+  color: ${({ $color }) => $color};
+
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: 1px solid ${({ $theme }) => hexToRgba($theme.borderColor, 0.6)};
-  color: ${({ $theme }) => $theme.fontColor};
 
-  ${({ $mounted, $isExiting, $index }) => {
+  /* entry/exit animation + stacking transform */
+  ${({ $horizontalAlign, $veticalAlign, $mounted, $isExiting, $index }) => {
     const base = 1 - $index * 0.02;
-    const entryTranslateY = "-50px";
-    const exitTranslateY = "-50px";
-    const translateY = $isExiting
-      ? exitTranslateY
-      : $mounted
-      ? "0"
-      : entryTranslateY;
+    const entryY = $veticalAlign === "top" ? "-50px" : "50px";
+    const exitY = entryY;
+    const tx = $horizontalAlign === "middle" ? "-50%" : "0";
+    const ty = $isExiting ? exitY : $mounted ? "0" : entryY;
     const scale = $isExiting ? base * 0.975 : $mounted ? base : base * 0.975;
     const opacity = $isExiting ? 0 : $mounted ? 1 : 0;
 
     return css`
-      transform: translateY(${translateY}) scale(${scale});
+      transform: translateX(${tx}) translateY(${ty}) scale(${scale});
       opacity: ${opacity};
-
-      transition: transform 0.2s ease, opacity 0.2s ease;
+      transition: top 0.3s ease, bottom 0.3s ease, transform 0.2s ease,
+        opacity 0.2s ease;
     `;
   }}
 
+  /* content styling */
   .column {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
   .message {
-    font: 14px sans-serif;
+    text-align: left;
+    font: 500 14px sans-serif;
   }
   .submessage {
-    font: 12px sans-serif;
+    text-align: left;
+    font: 400 12px sans-serif;
     opacity: 0.8;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .icon {
@@ -116,15 +122,14 @@ export const NotificationWrapper = styled.div<{
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: ${({ $theme }) => hexToRgba($theme.borderColor, 0.25)};
-    color: ${({ $theme }) => $theme.fontColor};
+    background: ${({ $border }) => hexToRgba($border, 0.25)};
+    color: ${({ $color }) => $color};
   }
 
   .close-icon-container {
     position: absolute;
     top: 4px;
     right: 4px;
-
     .close-icon {
       display: flex;
       align-items: center;
@@ -133,11 +138,11 @@ export const NotificationWrapper = styled.div<{
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      color: ${({ $theme }) => $theme.fontColor};
+      color: ${({ $color }) => $color};
       cursor: pointer;
       transition: background 0.25s ease;
       &:hover {
-        background: ${({ $theme }) => hexToRgba($theme.borderColor, 0.25)};
+        background: ${({ $border }) => hexToRgba($border, 0.25)};
       }
     }
   }

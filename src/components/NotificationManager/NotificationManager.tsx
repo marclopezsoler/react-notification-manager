@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { useNotifications } from "../../hooks/useNotifications.tsx";
 
-import type { NotificationProps } from "../../types.ts";
+import type { ColoredMode, NotificationProps } from "../../types.ts";
 
 const ORDER: Array<
   | "top-left"
@@ -23,7 +23,6 @@ const ORDER: Array<
 export default function NotificationManager() {
   const { notifications, exitNotification } = useNotifications();
 
-  // group by align
   const groups = useMemo(() => {
     const acc: Record<string, NotificationProps[]> = {};
     for (const n of notifications) {
@@ -41,11 +40,12 @@ export default function NotificationManager() {
         const bucket = groups[alignKey];
         if (!bucket) return null;
         return bucket
-          .slice(0, 4)
+          .slice(0, 10)
           .map((n, idx) => (
             <Notification
               key={n.id}
               {...n}
+              colored={n.colored ?? "full"}
               index={idx}
               onClose={() => exitNotification(n.id)}
             />
@@ -107,13 +107,42 @@ const defaultThemes: Record<NotificationProps["type"], NotificationThemeType> =
     },
   };
 
+const NONE_THEME: NotificationThemeType = defaultThemes.none;
+
+function computeColors(
+  mode: ColoredMode,
+  theme: NotificationThemeType
+): { bg: string; border: string; color: string } {
+  switch (mode) {
+    case "border":
+      return {
+        bg: NONE_THEME.backgroundColor,
+        border: theme.borderColor,
+        color: theme.fontColor,
+      };
+    case "plain":
+      return {
+        bg: NONE_THEME.backgroundColor,
+        border: NONE_THEME.borderColor,
+        color: NONE_THEME.fontColor,
+      };
+    case "full":
+    default:
+      return {
+        bg: theme.backgroundColor,
+        border: theme.borderColor,
+        color: theme.fontColor,
+      };
+  }
+}
+
 function Notification(props: NotificationProps) {
   const {
     id,
     message,
     subMessage,
     type,
-    theme,
+    theme = defaultThemes[props.type],
     hasIcon,
     isExiting = false,
     index = 0,
@@ -121,7 +150,10 @@ function Notification(props: NotificationProps) {
     canClose,
     onClose,
     align,
+    colored = "full",
   } = props;
+
+  const { bg, border, color } = computeColors(colored, theme);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -129,7 +161,6 @@ function Notification(props: NotificationProps) {
   }, []);
 
   const Icon = iconMap[type];
-  const appliedTheme = theme ?? defaultThemes[type];
 
   let veticalAlign: "top" | "bottom" = "top";
   let horizontalAlign: "left" | "middle" | "right" = "middle";
@@ -140,7 +171,6 @@ function Notification(props: NotificationProps) {
 
   return (
     <NotificationWrapper
-      $theme={appliedTheme}
       $index={index}
       $isExiting={isExiting}
       $mounted={mounted}
@@ -148,6 +178,9 @@ function Notification(props: NotificationProps) {
       $canClose={canClose ? true : false}
       $veticalAlign={veticalAlign}
       $horizontalAlign={horizontalAlign}
+      $bg={bg}
+      $border={border}
+      $color={color}
       onClick={
         onClick
           ? (e) => {

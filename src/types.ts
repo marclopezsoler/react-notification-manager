@@ -1,3 +1,7 @@
+export type ThemeMode = "light" | "dark";
+
+export type ColoredMode = "full" | "border" | "plain";
+
 export interface NotificationThemeType {
   borderColor: string;
   backgroundColor: string;
@@ -18,4 +22,14 @@ export interface NotificationProps {
   canClose?: boolean;
   onClose?: (id: string) => void;
   align?: ["top" | "bottom", "left" | "middle" | "right"];
+  defaultMode?: ThemeMode;
+  lightTheme?: Record<
+    "success" | "error" | "info" | "alert" | "none",
+    NotificationThemeType
+  >;
+  darkTheme?: Record<
+    "success" | "error" | "info" | "alert" | "none",
+    NotificationThemeType
+  >;
+  colored?: ColoredMode;
 }
