@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --dts-config tsconfig.build.json",
+    "build": "tsup src/index.ts --format esm,cjs --dts --tsconfig tsconfig.build.json",
     "build:types": "tsc -p tsconfig.build.json",
     "dev": "vite",
     "lint": "eslint .",
