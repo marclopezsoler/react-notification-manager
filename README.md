@@ -8,9 +8,9 @@ A **lightweight** React notification/toast system built with Context & Hooks, fe
 ## 📦 Installation
 
 ```bash
-npm install feedback-notification styled-components
+npm install feedback-notification
 # or
-yarn add feedback-notification styled-components
+yarn add feedback-notification
 ```
 ````
 
@@ -18,27 +18,26 @@ yarn add feedback-notification styled-components
 >
 > - `react` (^18 || ^19)
 > - `react-dom` (^18 || ^19)
-> - `styled-components` (^5 || ^6)
 
 ---
 
 ## 🚀 Basic Usage
 
-1. Wrap your app with the provider and add `NotificationList` at the root:
+1. Wrap your app with the provider and add `NotificationManager` at the root:
 
    ```tsx
    import React from "react";
    import {
      NotificationsProvider,
      useNotifications,
-     NotificationList,
+     NotificationManager,
    } from "feedback-notification";
 
    function App() {
      return (
        <NotificationsProvider>
          <Main />
-         <NotificationList />
+         <NotificationManager />
        </NotificationsProvider>
      );
    }
@@ -114,12 +113,12 @@ interface UseNotificationsResult {
 
 - **`exitNotification(id)`** – manually dismisses a toast (with exit animation).
 
-### `NotificationList`
+### `NotificationManager`
 
 Renders all active toasts with stacking, animations, and per-corner grouping. No props required.
 
 ```tsx
-<NotificationList />
+<NotificationManager />
 ```
 
 ---
@@ -129,23 +128,6 @@ Renders all active toasts with stacking, animations, and per-corner grouping. No
 - **Theming**: pass `theme` to `notify` to override border, background, and text colors.
 - **Position**: control screen corner via `align` (e.g., `['bottom', 'right']`).
 - **Icons**: toggle `hasIcon` on to show default icon shapes, or off for text-only toasts.
-
----
-
-## 🛠️ Development & Build
-
-- **Dev server**: `npm run dev` (Vite)
-- **Build library**: `npm run build` (bundles ESM + CJS + types via tsup)
-- **Generate types only**: `npm run build:types`
-
-Your published package (`dist/`) will include:
-
-```
-dist/
-  index.cjs.js    // CommonJS entry
-  index.mjs       // ESM entry
-  index.d.ts      // Type declarations
-```
 
 ---
 

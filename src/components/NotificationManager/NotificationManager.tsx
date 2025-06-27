@@ -1,3 +1,60 @@
+import { useMemo } from "react";
+
+import { useNotifications } from "../../hooks/useNotifications.tsx";
+
+import type { NotificationProps } from "../../types.ts";
+
+const ORDER: Array<
+  | "top-left"
+  | "top-middle"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-middle"
+  | "bottom-right"
+> = [
+  "top-left",
+  "top-middle",
+  "top-right",
+  "bottom-left",
+  "bottom-middle",
+  "bottom-right",
+];
+
+export default function NotificationManager() {
+  const { notifications, exitNotification } = useNotifications();
+
+  // group by align
+  const groups = useMemo(() => {
+    const acc: Record<string, NotificationProps[]> = {};
+    for (const n of notifications) {
+      const [v = "top", h = "middle"] = n.align ?? ["top", "middle"];
+      const key = `${v}-${h}`;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(n);
+    }
+    return acc;
+  }, [notifications]);
+
+  return (
+    <>
+      {ORDER.map((alignKey) => {
+        const bucket = groups[alignKey];
+        if (!bucket) return null;
+        return bucket
+          .slice(0, 4)
+          .map((n, idx) => (
+            <Notification
+              key={n.id}
+              {...n}
+              index={idx}
+              onClose={() => exitNotification(n.id)}
+            />
+          ));
+      })}
+    </>
+  );
+}
+
 import { useEffect, useState } from "react";
 
 import { AlertIcon } from "../../icons/alert.tsx";
@@ -6,7 +63,7 @@ import { InfoIcon } from "../../icons/info.tsx";
 import { SuccessIcon } from "../../icons/success.tsx";
 import { CloseIcon } from "../../icons/x.tsx";
 
-import type { NotificationProps, NotificationThemeType } from "../../types.ts";
+import type { NotificationThemeType } from "../../types.ts";
 
 import { NotificationWrapper } from "./Notification.style";
 
@@ -50,7 +107,7 @@ const defaultThemes: Record<NotificationProps["type"], NotificationThemeType> =
     },
   };
 
-export default function Notification(props: NotificationProps) {
+function Notification(props: NotificationProps) {
   const {
     id,
     message,
