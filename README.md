@@ -1,70 +1,158 @@
-# React + TypeScript + Vite
+````markdown
+# feedback-notification
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **lightweight** React notification/toast system built with Context & Hooks, featuring customizable themes, icons, and corner-based positioning.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📦 Installation
 
-## Expanding the ESLint configuration
+```bash
+npm install feedback-notification styled-components
+# or
+yarn add feedback-notification styled-components
+```
+````
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+> **Peer Dependencies**
+>
+> - `react` (^18 || ^19)
+> - `react-dom` (^18 || ^19)
+> - `styled-components` (^5 || ^6)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🚀 Basic Usage
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Wrap your app with the provider and add `NotificationList` at the root:
+
+   ```tsx
+   import React from "react";
+   import {
+     NotificationsProvider,
+     useNotifications,
+     NotificationList,
+   } from "feedback-notification";
+
+   function App() {
+     return (
+       <NotificationsProvider>
+         <Main />
+         <NotificationList />
+       </NotificationsProvider>
+     );
+   }
+
+   function Main() {
+     const { notify } = useNotifications();
+     return (
+       <button
+         onClick={() =>
+           notify({
+             message: "Data saved successfully!",
+             type: "success",
+             duration: 3000,
+           })
+         }
+       >
+         Save Data
+       </button>
+     );
+   }
+   ```
+
+2. Anywhere in your component tree, call the `useNotifications()` hook to send toasts:
+
+   ```tsx
+   const { notify } = useNotifications();
+   notify({
+     message: "Oops, something went wrong.",
+     type: "error",
+     duration: 5000,
+     hasIcon: true,
+     canClose: true,
+     subMessage: "Please retry.",
+     align: ["bottom", "right"],
+   });
+   ```
+
+---
+
+## 🛠️ API Reference
+
+### `NotificationsProvider`
+
+Wrap this around your app once. It provides the React context for notifications.
+
+```tsx
+<NotificationsProvider>…</NotificationsProvider>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### `useNotifications()`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+A hook that returns:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```ts
+interface UseNotificationsResult {
+  notifications: NotificationProps[];
+  notify: (options: Omit<NotificationProps, "id" | "isExiting">) => void;
+  exitNotification: (id: string) => void;
+}
 ```
-# feecback-notification
+
+- **`notify(options)`** – creates a new toast.
+
+  - `message: string` — main text
+  - `subMessage?: string` — secondary text
+  - `type: 'success' | 'error' | 'info' | 'alert' | 'none'`
+  - `duration: number` — milliseconds before auto-dismiss
+  - `theme?: { borderColor, backgroundColor, fontColor }` — custom colors
+  - `hasIcon?: boolean` — show default icon
+  - `onClick?: () => void` — callback when toast clicked
+  - `canClose?: boolean` — show manual close button
+  - `align?: ['top' | 'bottom', 'left' | 'middle' | 'right']` — corner position
+
+- **`exitNotification(id)`** – manually dismisses a toast (with exit animation).
+
+### `NotificationList`
+
+Renders all active toasts with stacking, animations, and per-corner grouping. No props required.
+
+```tsx
+<NotificationList />
+```
+
+---
+
+## 🎨 Customization
+
+- **Theming**: pass `theme` to `notify` to override border, background, and text colors.
+- **Position**: control screen corner via `align` (e.g., `['bottom', 'right']`).
+- **Icons**: toggle `hasIcon` on to show default icon shapes, or off for text-only toasts.
+
+---
+
+## 🛠️ Development & Build
+
+- **Dev server**: `npm run dev` (Vite)
+- **Build library**: `npm run build` (bundles ESM + CJS + types via tsup)
+- **Generate types only**: `npm run build:types`
+
+Your published package (`dist/`) will include:
+
+```
+dist/
+  index.cjs.js    // CommonJS entry
+  index.mjs       // ESM entry
+  index.d.ts      // Type declarations
+```
+
+---
+
+## 📄 License
+
+Released under the [MIT License](LICENSE).
+
+```
+
+```
