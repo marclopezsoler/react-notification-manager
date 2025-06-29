@@ -92,7 +92,7 @@ import {
 
 setupNotificationConfig({
   defaultMode: "dark", // "light" | "dark"
-  colored: "border", // "full" | "border" | "plain"
+  colored: "border", // "full" | "border" | "none"
   hasIcon: false, // show icon by default
   canClose: true, // show close button by default
   duration: 7000, // default duration in ms (-1 = stays until manually closed)
@@ -175,7 +175,7 @@ interface UseNotificationsResult {
   - `onClick?: () => void` — callback when toast clicked
   - `canClose?: boolean` — show manual close button
   - `align?: ['top' | 'bottom', 'left' | 'middle' | 'right']` — corner position
-  - `colored?: 'full' | 'border' | 'plain'` — color mode
+  - `colored?: 'full' | 'border' | 'none'` — color mode
 
 - **`exitNotification(id)`** – manually dismisses a toast (with exit animation).
 
