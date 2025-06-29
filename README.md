@@ -23,7 +23,7 @@ yarn add marc-react-notification-manager
 
 ## 🚀 Basic Usage
 
-1. Wrap your app with the provider and add `NotificationManager` at the root:
+1. **Wrap your app with the provider** and add `NotificationManager` at the root:
 
    ```tsx
    import React from "react";
@@ -60,7 +60,7 @@ yarn add marc-react-notification-manager
    }
    ```
 
-2. Anywhere in your component tree, call the `useNotifications()` hook to send toasts:
+2. Anywhere in your component tree, **call the `useNotifications()` hook** to send toasts:
 
    ```tsx
    const { notify } = useNotifications();
@@ -79,9 +79,11 @@ yarn add marc-react-notification-manager
 
 ## ⚙️ Global Configuration
 
-Set global defaults once in your app entry:
+To set **global defaults**, create a config file (recommended naming: `marc-react-notification-manager.config.ts`):
 
 ```ts
+// marc-react-notification-manager.config.ts
+
 import {
   setupNotificationConfig,
   DEFAULT_LIGHT,
@@ -90,7 +92,7 @@ import {
 
 setupNotificationConfig({
   defaultMode: "dark", // "light" | "dark"
-  colored: "border", // "full" | "border" | "none"
+  colored: "border", // "full" | "border" | "plain"
   hasIcon: false, // show icon by default
   canClose: true, // show close button by default
   duration: 7000, // default duration in ms (-1 = stays until manually closed)
@@ -114,7 +116,28 @@ setupNotificationConfig({
 });
 ```
 
-- **If `duration` is set to `-1`, notifications remain visible until manually closed.**
+Then, **import this config file at the top of your entry file** (where you add the provider) to ensure it runs before your app uses the notifications:
+
+```tsx
+import "./marc-react-notification-manager.config.ts";
+
+import React from "react";
+import {
+  NotificationsProvider,
+  NotificationManager,
+} from "marc-react-notification-manager";
+
+function App() {
+  return (
+    <NotificationsProvider>
+      <Main />
+      <NotificationManager />
+    </NotificationsProvider>
+  );
+}
+```
+
+> **Note:** If `duration` is set to `-1`, notifications will remain visible until manually dismissed using the close button or programmatically.
 
 ---
 
@@ -152,7 +175,7 @@ interface UseNotificationsResult {
   - `onClick?: () => void` — callback when toast clicked
   - `canClose?: boolean` — show manual close button
   - `align?: ['top' | 'bottom', 'left' | 'middle' | 'right']` — corner position
-  - `colored?: 'full' | 'border' | 'none'` — color mode
+  - `colored?: 'full' | 'border' | 'plain'` — color mode
 
 - **`exitNotification(id)`** – manually dismisses a toast (with exit animation).
 
