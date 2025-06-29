@@ -37,7 +37,7 @@ yarn add marc-react-notification-manager
      return (
        <NotificationsProvider>
          <Main />
-         <NotificationManager defaultMode="light" />
+         <NotificationManager />
        </NotificationsProvider>
      );
    }
@@ -77,6 +77,47 @@ yarn add marc-react-notification-manager
 
 ---
 
+## ⚙️ Global Configuration
+
+Set global defaults once in your app entry:
+
+```ts
+import {
+  setupNotificationConfig,
+  DEFAULT_LIGHT,
+  DEFAULT_DARK,
+} from "marc-react-notification-manager";
+
+setupNotificationConfig({
+  defaultMode: "dark", // "light" | "dark"
+  colored: "border", // "full" | "border" | "none"
+  hasIcon: false, // show icon by default
+  canClose: true, // show close button by default
+  duration: 7000, // default duration in ms (-1 = stays until manually closed)
+  align: ["bottom", "right"], // default position
+  lightTheme: {
+    ...DEFAULT_LIGHT,
+    alert: {
+      backgroundColor: "#FFFFFF",
+      borderColor: "#FF7777",
+      fontColor: "#000000",
+    },
+  },
+  darkTheme: {
+    ...DEFAULT_DARK,
+    alert: {
+      backgroundColor: "#000000",
+      borderColor: "#FF7777",
+      fontColor: "#FFFFFF",
+    },
+  },
+});
+```
+
+- **If `duration` is set to `-1`, notifications remain visible until manually closed.**
+
+---
+
 ## 🛠️ API Reference
 
 ### `NotificationsProvider`
@@ -104,13 +145,14 @@ interface UseNotificationsResult {
   - `message: string` — main text
   - `subMessage?: string` — secondary text
   - `type: 'success' | 'error' | 'info' | 'alert' | 'none'`
-  - `duration: number` — milliseconds before auto-dismiss
+  - `duration: number` — milliseconds before auto-dismiss (`-1` for persistent)
   - `theme?: { borderColor, backgroundColor, fontColor }` — custom colors
   - `hasIcon?: boolean` — show default icon
   - `customIcon?: ReactNode` — render a custom icon or component instead of the default icon
   - `onClick?: () => void` — callback when toast clicked
   - `canClose?: boolean` — show manual close button
   - `align?: ['top' | 'bottom', 'left' | 'middle' | 'right']` — corner position
+  - `colored?: 'full' | 'border' | 'none'` — color mode
 
 - **`exitNotification(id)`** – manually dismisses a toast (with exit animation).
 
@@ -126,6 +168,7 @@ Renders all active toasts with stacking, animations, and per-corner grouping. No
 
 ## 🎨 Customization
 
+- **Global defaults**: use `setupNotificationConfig()` to set mode, theme, duration, and other defaults.
 - **Theming**: pass `theme` to `notify` to override border, background, and text colors.
 - **Position**: control screen corner via `align` (e.g., `['bottom', 'right']`).
 - **Icons**:

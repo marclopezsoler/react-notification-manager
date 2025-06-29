@@ -1,6 +1,6 @@
 {
   "name": "marc-react-notification-manager",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A lightweight React notification/toast system with hooks & context",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -47,5 +47,10 @@
   "homepage": "https://react-notification-manager-demo.vercel.app/",
   "dependencies": {
     "styled-components": "^6.1.19"
+  },
+  "author": {
+    "name": "Marc López",
+    "email": "info@marclopez.xyz",
+    "url": "https://marclopez.xyz"
   }
 }

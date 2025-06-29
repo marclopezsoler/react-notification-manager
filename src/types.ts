@@ -1,6 +1,6 @@
 export type ThemeMode = "light" | "dark";
 
-export type ColoredMode = "full" | "border" | "plain";
+export type ColoredMode = "full" | "border" | "none";
 
 export interface NotificationThemeType {
   borderColor: string;

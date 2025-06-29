@@ -89,7 +89,7 @@ function computeColors(
         border: base.borderColor,
         color: base.fontColor,
       };
-    case "plain":
+    case "none":
       return {
         bg: none.backgroundColor,
         border: none.borderColor,
