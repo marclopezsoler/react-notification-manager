@@ -1,18 +1,18 @@
-````markdown
-# feedback-notification
+# marc-react-notification-manager
 
-A **lightweight** React notification/toast system built with Context & Hooks, featuring customizable themes, icons, and corner-based positioning.
+A **lightweight** React notification/toast system built with Context & Hooks, featuring customizable themes, icons, custom icons, and corner-based positioning.
+
+[**🌐 Live Demo**](https://react-notification-manager-demo.vercel.app/)
 
 ---
 
 ## 📦 Installation
 
 ```bash
-npm install feedback-notification
+npm install marc-react-notification-manager
 # or
-yarn add feedback-notification
+yarn add marc-react-notification-manager
 ```
-````
 
 > **Peer Dependencies**
 >
@@ -31,13 +31,13 @@ yarn add feedback-notification
      NotificationsProvider,
      useNotifications,
      NotificationManager,
-   } from "feedback-notification";
+   } from "marc-react-notification-manager";
 
    function App() {
      return (
        <NotificationsProvider>
          <Main />
-         <NotificationManager />
+         <NotificationManager defaultMode="light" />
        </NotificationsProvider>
      );
    }
@@ -107,6 +107,7 @@ interface UseNotificationsResult {
   - `duration: number` — milliseconds before auto-dismiss
   - `theme?: { borderColor, backgroundColor, fontColor }` — custom colors
   - `hasIcon?: boolean` — show default icon
+  - `customIcon?: ReactNode` — render a custom icon or component instead of the default icon
   - `onClick?: () => void` — callback when toast clicked
   - `canClose?: boolean` — show manual close button
   - `align?: ['top' | 'bottom', 'left' | 'middle' | 'right']` — corner position
@@ -127,14 +128,6 @@ Renders all active toasts with stacking, animations, and per-corner grouping. No
 
 - **Theming**: pass `theme` to `notify` to override border, background, and text colors.
 - **Position**: control screen corner via `align` (e.g., `['bottom', 'right']`).
-- **Icons**: toggle `hasIcon` on to show default icon shapes, or off for text-only toasts.
-
----
-
-## 📄 License
-
-Released under the [MIT License](LICENSE).
-
-```
-
-```
+- **Icons**:
+  - Use `hasIcon` to show default icon shapes.
+  - Pass `customIcon` to render your own icon or JSX element inside the notification.

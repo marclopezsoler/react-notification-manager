@@ -1,6 +1,6 @@
 {
   "name": "marc-react-notification-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A lightweight React notification/toast system with hooks & context",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -44,6 +44,7 @@
     "type": "git",
     "url": "https://github.com/marclopezsoler/react-notification-manager"
   },
+  "homepage": "https://react-notification-manager-demo.vercel.app/",
   "dependencies": {
     "styled-components": "^6.1.19"
   }
