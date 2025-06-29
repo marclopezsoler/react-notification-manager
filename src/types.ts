@@ -13,7 +13,7 @@ export interface NotificationProps {
   message: string;
   subMessage?: string;
   type: "success" | "error" | "info" | "alert" | "none";
-  duration: number;
+  duration?: number;
   theme?: NotificationThemeType;
   isExiting?: boolean;
   index?: number;
@@ -32,6 +32,7 @@ export interface NotificationProps {
     NotificationThemeType
   >;
   colored?: ColoredMode;
+  customIcon?: React.ReactNode;
 }
 
 export interface NotificationsProviderProps {

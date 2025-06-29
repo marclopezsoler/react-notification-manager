@@ -109,6 +109,19 @@ export const NotificationWrapper = styled.div<{
     text-overflow: ellipsis;
   }
 
+  .custom-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .custom-icon > * {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
   .icon {
     display: flex;
     align-items: center;

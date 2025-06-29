@@ -109,7 +109,7 @@ export function NotificationsProvider({
     (notif: Omit<NotificationProps, "id" | "isExiting">) => {
       const id = crypto.randomUUID();
       setNotifications((all) => [{ ...notif, id, isExiting: false }, ...all]);
-      setTimeout(() => exitNotification(id), notif.duration);
+      notif.duration && setTimeout(() => exitNotification(id), notif.duration);
     },
     [exitNotification]
   );

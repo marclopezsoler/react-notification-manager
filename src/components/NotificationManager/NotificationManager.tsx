@@ -120,12 +120,11 @@ function Notification(props: NotificationProps) {
     onClose,
     align,
     colored = "full",
+    customIcon,
   } = props;
 
-  // pull context
   const { mode, lightTheme, darkTheme } = useNotifications();
 
-  // compute our three CSS values:
   const { bg, border, color } = computeColors(
     colored,
     type,
@@ -135,7 +134,6 @@ function Notification(props: NotificationProps) {
     mode
   );
 
-  // mount flag for entry animation
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     requestAnimationFrame(() => setMounted(true));
@@ -171,10 +169,15 @@ function Notification(props: NotificationProps) {
           : undefined
       }
     >
-      {hasIcon && Icon && (
-        <div className="icon">
-          <Icon />
-        </div>
+      {customIcon ? (
+        <div className="custom-icon">{customIcon}</div>
+      ) : (
+        hasIcon &&
+        Icon && (
+          <div className="icon">
+            <Icon />
+          </div>
+        )
       )}
       <div className="column">
         <span className="message">{message}</span>
