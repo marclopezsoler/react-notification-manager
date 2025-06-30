@@ -89,15 +89,23 @@ export const NotificationWrapper = styled.div<{
     `;
   }}
 
+  &:hover {
+    .close-icon-container {
+      opacity: 1;
+    }
+  }
+
   .column {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
+
   .message {
     text-align: left;
     font: 500 14px sans-serif;
   }
+
   .submessage {
     text-align: left;
     font: 400 12px sans-serif;
@@ -138,6 +146,10 @@ export const NotificationWrapper = styled.div<{
     position: absolute;
     top: 4px;
     right: 4px;
+
+    opacity: 0;
+
+    transition: 0.25s;
 
     .close-icon {
       display: flex;
