@@ -13,7 +13,7 @@ export function useNotifications(): {
   notify: (notif: Omit<NotificationProps, "id" | "isExiting">) => void;
   exitNotification: (id: string) => void;
   mode: ThemeMode;
-  setMode: (m: ThemeMode) => void;
+  toggleMode: () => void;
   lightTheme: Record<NotificationProps["type"], NotificationThemeType>;
   darkTheme: Record<NotificationProps["type"], NotificationThemeType>;
 } {

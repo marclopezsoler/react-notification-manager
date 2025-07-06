@@ -1,5 +1,4 @@
 import { createContext } from "react";
-
 import type {
   NotificationProps,
   NotificationThemeType,
@@ -11,7 +10,7 @@ interface NotificationContextValue {
   notify: (n: Omit<NotificationProps, "id" | "isExiting">) => void;
   exitNotification: (id: string) => void;
   mode: ThemeMode;
-  setMode: (m: ThemeMode) => void;
+  toggleMode: () => void;
   lightTheme: Record<NotificationProps["type"], NotificationThemeType>;
   darkTheme: Record<NotificationProps["type"], NotificationThemeType>;
 }

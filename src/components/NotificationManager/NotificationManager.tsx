@@ -26,7 +26,7 @@ const ORDER = [
 ] as const;
 
 export default function NotificationManager() {
-  const { notifications, exitNotification } = useNotifications();
+  const { mode, notifications, exitNotification } = useNotifications();
 
   const groups = useMemo(() => {
     const acc: Record<string, NotificationProps[]> = {};
@@ -36,7 +36,7 @@ export default function NotificationManager() {
       (acc[key] ||= []).push(n);
     }
     return acc;
-  }, [notifications]);
+  }, [notifications, mode]);
 
   return (
     <>

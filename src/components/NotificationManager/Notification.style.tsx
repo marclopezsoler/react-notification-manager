@@ -134,9 +134,9 @@ export const NotificationWrapper = styled.div<{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
-    width: 16px;
-    height: 16px;
+    padding: 4px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: ${({ $border }) => hexToRgba($border, 0.25)};
     color: ${({ $color }) => $color};
@@ -155,9 +155,9 @@ export const NotificationWrapper = styled.div<{
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px;
-      width: 16px;
-      height: 16px;
+      padding: 4px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       color: ${({ $color }) => $color};
       cursor: pointer;
